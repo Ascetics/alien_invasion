@@ -31,13 +31,7 @@ class AlienInvasion():
         while True:
             self._check_events()
             self.ship.update()
-            self.bullets.update()
-
-            # 清除消失的子弹
-            for bullet in self.bullets.copy():
-                if bullet.rect.bottom <= 0:
-                    self.bullets.remove(bullet)
-
+            self._update_bullets()
             self._update_screen()
 
     def _check_events(self):
@@ -66,9 +60,16 @@ class AlienInvasion():
             self.ship.moving_left = False 
 
     def _fire_bullet(self):
-        new_bullet = Bullet(self)
-        self.bullets.add(new_bullet)
+        if len(self.bullets) < self.settings.bullets_allowed:
+            new_bullet = Bullet(self)
+            self.bullets.add(new_bullet)
 
+    def _update_bullets(self):
+        self.bullets.update()
+        # 清除消失的子弹
+        for bullet in self.bullets.copy():
+            if bullet.rect.bottom <= 0:
+                self.bullets.remove(bullet)
 
     def _update_screen(self):
         # 更新屏幕上的图像，并切换到新屏幕
